@@ -15,6 +15,7 @@ use EasySwoole\HyperfOrm\Generate\GenerateModel;
 use Psr\Container\ContainerInterface;
 use Swoole\Timer;
 use EasySwoole\EasySwoole\Core;
+use Swoole\Coroutine\Scheduler;
 
 class ModelCommand implements CommandInterface
 {
@@ -28,7 +29,7 @@ class ModelCommand implements CommandInterface
         $args = CommandManager::getInstance()->getArgs();
         $table = !empty($args) ? current($args) : '';
         Core::getInstance()->initialize();
-        $scheduler = new Coroutine\Scheduler;
+        $scheduler = new Scheduler();
         $scheduler->add(function () use ($table, &$message) {
             try {
                 $container = Di::getInstance()->get(ContainerInterface::class);
