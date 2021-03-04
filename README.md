@@ -27,7 +27,7 @@ to the require section of your `composer.json` file.
 Config
 ------------
 ```php
-fiel dev.php add
+file dev.php add
 
 <?php
     return  [
