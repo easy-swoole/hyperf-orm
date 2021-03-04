@@ -20,7 +20,7 @@ composer require easyswoole/hyperf-orm
 or add
 
 ```
-"easyswoole/hyperf-orm": "*"
+"easyswoole/hyperf-orm": "dev-main"
 ```
 to the require section of your `composer.json` file.
 
@@ -112,7 +112,7 @@ Command
 ```
     
 
-Other Use
+Model
 -------------
 
 ```php
@@ -154,4 +154,31 @@ class Demo extends Model
      */
     protected $casts = ['demo_id' => 'string', 'create_at' => 'datetime', 'update_at' => 'datetime'];
 }
+```
+
+Use
+------
+
+```php
+file EasySwooleEvent.php add
+<?php
+    ....
+
+    use EasySwoole\EasySwoole\Config;        
+    use EasySwoole\Pool\Manager;
+    use EasySwoole\HyperfOrm\MysqlPool;        
+    ....
+
+    public static function initialize() {
+
+        $databases = Config::getInstance()->getConf('databases');
+        $manager = Manager::getInstance();
+        foreach ($databases as $name => $conf) {
+            if (!is_null($manager->get($name))) {
+                continue;
+            }
+            Manager::getInstance()->register(new MysqlPool($conf), $name);
+        }
+    }
+        
 ```
