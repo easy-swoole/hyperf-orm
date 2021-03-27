@@ -20,7 +20,7 @@ composer require easyswoole/hyperf-orm "dev-main"
 or add
 
 ```
-"easyswoole/hyperf-orm": "dev-main"
+"easyswoole/hyperf-orm": "*"
 ```
 to the require section of your `composer.json` file.
 
@@ -75,12 +75,15 @@ file EasySwooleEvent.php add
 ```php
     <?php
     
+    use Psr\Container\ContainerInterface;
+    use EasySwoole\HyperfOrm\Container;
     use EasySwoole\HyperfOrm\ConfigFactory;
     use EasySwoole\HyperfOrm\ConnectionResolver;
     use Hyperf\Contract\ConfigInterface;
     use Hyperf\Database\ConnectionResolverInterface;
     use EasySwoole\Component\Di;
     
+    Di::getInstance()->set(ContainerInterface::class, Container::class);
     Di::getInstance()->set(ConfigInterface::class, ConfigFactory::class);
     Di::getInstance()->set(ConnectionResolverInterface::class,  ConnectionResolver::class, []);
 ```
