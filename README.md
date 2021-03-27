@@ -20,7 +20,7 @@ composer require easyswoole/hyperf-orm
 or add
 
 ```
-"easyswoole/hyperf-orm": "dev-main"
+"easyswoole/hyperf-orm": "*"
 ```
 to the require section of your `composer.json` file.
 
