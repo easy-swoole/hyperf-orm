@@ -14,7 +14,7 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-composer require easyswoole/hyperf-orm
+composer require easyswoole/hyperf-orm "dev-main"
 ```
 
 or add
@@ -31,7 +31,7 @@ file dev.php add
 
 <?php
     return  [
-            'database' => [
+            'databases' => [
                 'default' => [
                     'driver'    => 'mysql',
                     'host'      => '127.0.0.1',
