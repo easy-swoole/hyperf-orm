@@ -19,6 +19,7 @@ use Hyperf\Database\Migrations\Migrator;
 use EasySwoole\EasySwoole\Core;
 use Hyperf\Utils\Filesystem\Filesystem;
 use EasySwoole\Command\Color;
+use Swoole\Coroutine;
 use Swoole\Coroutine\Scheduler;
 use Swoole\Timer;
 
@@ -49,29 +50,37 @@ class MigrateCommand extends BaseCommand implements CommandInterface
         return 'migrate';
     }
 
+    protected function migrate()
+    {
+        // create migreates table
+        $this->prepareDatabase();
+
+        // Next, we will check to see if a path option has been defined. If it has
+        // we will use the path relative to the root of this installation folder
+        // so that migrations may be run for any path within the applications.
+        $migrations = $this->migrator
+            ->run($this->getMigrationPaths(), [
+                'pretend' => CommandManager::getInstance()->getOpt('pretend'),
+                'step' => CommandManager::getInstance()->getOpt('step'),
+            ]);
+
+        foreach ($migrations as $migration){
+            echo Color::info("Migrating: {$migration}") . PHP_EOL;
+        }
+    }
+
     public function exec(): ?string
     {
-        $scheduler = new Scheduler();
-        $scheduler->add(function () {
-
-            // create migreates table
-            $this->prepareDatabase();
-
-            // Next, we will check to see if a path option has been defined. If it has
-            // we will use the path relative to the root of this installation folder
-            // so that migrations may be run for any path within the applications.
-            $migrations = $this->migrator
-                ->run($this->getMigrationPaths(), [
-                    'pretend' => CommandManager::getInstance()->getOpt('pretend'),
-                    'step' => CommandManager::getInstance()->getOpt('step'),
-                ]);
-
-            foreach ($migrations as $migration){
-                echo Color::info("Migrating: {$migration}") . PHP_EOL;
-            }
-            Timer::clearAll();
-        });
-        $scheduler->start();
+        if (Coroutine::getUid()) {
+            $this->migrate();
+        } else {
+            $scheduler = new Scheduler();
+            $scheduler->add(function () {
+                $this->migrate();
+                Timer::clearAll();
+            });
+            $scheduler->start();
+        }
         return null;
     }
 
