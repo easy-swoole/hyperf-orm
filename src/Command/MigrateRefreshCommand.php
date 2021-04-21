@@ -59,6 +59,7 @@ class MigrateRefreshCommand extends BaseCommand implements CommandInterface
                 'migrate',
                 "--database={$connection}",
                 "--force=true",
+                "--coroutine=true"
             ];
             if (!empty($path)) {
                 $params[] = "--path={$path}";
@@ -100,6 +101,7 @@ class MigrateRefreshCommand extends BaseCommand implements CommandInterface
             'migrate:rollback',
             "--database={$database}",
             "--force=true",
+            "--coroutine=true"
         ];
         if (!empty($path)) {
             $params[] = "--path={$path}";
@@ -128,6 +130,7 @@ class MigrateRefreshCommand extends BaseCommand implements CommandInterface
             'migrate:reset',
             "--database={$database}",
             "--force=true",
+            "--coroutine=true"
         ];
         if (!empty($path)) {
             $params[] = "--path={$path}";

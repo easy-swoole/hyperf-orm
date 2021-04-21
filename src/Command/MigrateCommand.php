@@ -25,26 +25,6 @@ use Swoole\Timer;
 
 class MigrateCommand extends BaseCommand implements CommandInterface
 {
-    /**
-     * The migrator instance.
-     *
-     * @var Migrator
-     */
-    protected $migrator;
-
-    public function __construct()
-    {
-        Core::getInstance()->initialize();
-        $resolver = make(ConnectionResolverInterface::class);
-        $repository = make(DatabaseMigrationRepository::class, [$resolver, 'migrations']);
-        $this->migrator = make(Migrator::class, [
-            $repository,
-            $resolver,
-            make(Filesystem::class),
-        ]);
-
-    }
-
     public function commandName(): string
     {
         return 'migrate';
@@ -71,7 +51,8 @@ class MigrateCommand extends BaseCommand implements CommandInterface
 
     public function exec(): ?string
     {
-        if (Coroutine::getUid()) {
+        $coroutine = CommandManager::getInstance()->getOpt('coroutine', false);
+        if ($coroutine) {
             $this->migrate();
         } else {
             $scheduler = new Scheduler();
@@ -115,7 +96,8 @@ class MigrateCommand extends BaseCommand implements CommandInterface
             $caller->setParams([
                 'easyswoole',
                 'migrate:install',
-                "--database={$database}"
+                "--database={$database}",
+                "--coroutine=true",
             ]);
             $caller->setScript('easyswoole');
             $caller->setCommand('migrate:install');

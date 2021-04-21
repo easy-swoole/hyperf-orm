@@ -12,50 +12,42 @@ namespace EasySwoole\HyperfOrm\Command;
 use EasySwoole\Command\AbstractInterface\CommandHelpInterface;
 use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\CommandManager;
-use Hyperf\Database\ConnectionResolverInterface;
-use Hyperf\Database\Migrations\DatabaseMigrationRepository;
-use EasySwoole\EasySwoole\Core;
 use EasySwoole\Command\Color;
-use Swoole\Coroutine;
 use Swoole\Coroutine\Scheduler;
 use Swoole\Timer;
 
-class MigrateInstallCommand implements CommandInterface
+class MigrateInstallCommand extends BaseCommand implements CommandInterface
 {
-    protected $repository;
-
-    public function __construct()
-    {
-        Core::getInstance()->initialize();
-        $resolver = make(ConnectionResolverInterface::class);
-        $this->repository = make(DatabaseMigrationRepository::class, [$resolver, 'migrations']);;
-    }
-
     public function commandName(): string
     {
         return 'migrate:install';
     }
 
-    protected function install(): string
+    protected function install()
     {
-        $this->repository->setSource(CommandManager::getInstance()->getOpt('database', 'default'));
-        $this->repository->createRepository();
-        return Color::info("Migration table created successfully.");
+        $database = CommandManager::getInstance()->getOpt('database', 'default');
+        $this->migrator->setConnection($database);
+        if (!$this->migrator->repositoryExists()) {
+            $this->repository->setSource($database);
+            $this->repository->createRepository();
+            echo Color::info("Migration table created successfully.");
+        }
     }
 
     public function exec(): ?string
     {
-        if (Coroutine::getUid()) {
-            $message = $this->install();
+        $coroutine = CommandManager::getInstance()->getOpt('coroutine', false);
+        if ($coroutine) {
+            $this->install();
         } else {
             $scheduler = new Scheduler();
-            $scheduler->add(function () use (&$message) {
-                $message = $this->install();
+            $scheduler->add(function () {
+                $this->install();
                 Timer::clearAll();
             });
             $scheduler->start();
         }
-        return $message;
+        return null;
     }
 
     public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
