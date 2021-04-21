@@ -26,9 +26,8 @@ to the require section of your `composer.json` file.
 
 Config
 ------------
+`dev.php or product.php`
 ```php
-file dev.php add
-
 <?php
     return  [
             'database' => [
@@ -69,9 +68,9 @@ file dev.php add
     ];
 ```
 
-DI
+Use
 ------------
-file EasySwooleEvent.php add
+`EasySwooleEvent.php`
 ```php
     <?php
     
@@ -82,17 +81,30 @@ file EasySwooleEvent.php add
     use Hyperf\Contract\ConfigInterface;
     use Hyperf\Database\ConnectionResolverInterface;
     use EasySwoole\Component\Di;
+    use EasySwoole\EasySwoole\Config;        
+    use EasySwoole\Pool\Manager;
+    use EasySwoole\HyperfOrm\MysqlPool;  
     
-    Di::getInstance()->set(ContainerInterface::class, Container::class);
-    Di::getInstance()->set(ConfigInterface::class, ConfigFactory::class);
-    Di::getInstance()->set(ConnectionResolverInterface::class,  ConnectionResolver::class, []);
+    public static function initialize() {
+            
+        Di::getInstance()->set(ContainerInterface::class, Container::class);
+        Di::getInstance()->set(ConfigInterface::class, ConfigFactory::class);
+        Di::getInstance()->set(ConnectionResolverInterface::class,  ConnectionResolver::class, []);
+
+        $databases = Config::getInstance()->getConf('databases');
+        $manager = Manager::getInstance();
+        foreach ($databases as $name => $conf) {
+            if (!is_null($manager->get($name))) {
+                continue;
+            }
+            Manager::getInstance()->register(new MysqlPool($conf), $name);
+        }
+    }
 ```
 
 Command Config
 ----------------
-
-file bootstrap.php add
-
+`bootstrap.php`
 ```php
 <?php
 //全局bootstrap事件
@@ -104,13 +116,25 @@ CommandUtility::getInstance()->init();
     
 Command 
 ---------------- 
-
 ```
+    // model
     php easyswoole gen:model 
 
     or 
 
     php easyswoole gen:model tableName
+    
+    // migrate
+    
+    php easyswoole  gen:model        
+    php easyswoole  migrate         
+    php easyswoole  migrate:fresh    
+    php easyswoole  migrate:install   
+    php easyswoole  migrate:refresh  
+    php easyswoole  migrate:reset     
+    php easyswoole  migrate:rollback  
+    php easyswoole  migrate:status    
+
 ```
     
 
@@ -156,31 +180,4 @@ class Demo extends Model
      */
     protected $casts = ['demo_id' => 'string', 'create_at' => 'datetime', 'update_at' => 'datetime'];
 }
-```
-
-Use
-------
-
-```php
-file EasySwooleEvent.php add
-<?php
-    ....
-
-    use EasySwoole\EasySwoole\Config;        
-    use EasySwoole\Pool\Manager;
-    use EasySwoole\HyperfOrm\MysqlPool;        
-    ....
-
-    public static function initialize() {
-
-        $databases = Config::getInstance()->getConf('databases');
-        $manager = Manager::getInstance();
-        foreach ($databases as $name => $conf) {
-            if (!is_null($manager->get($name))) {
-                continue;
-            }
-            Manager::getInstance()->register(new MysqlPool($conf), $name);
-        }
-    }
-        
 ```
