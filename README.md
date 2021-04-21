@@ -97,10 +97,10 @@ file bootstrap.php add
 <?php
 //全局bootstrap事件
 use EasySwoole\Command\CommandManager;
-use EasySwoole\HyperfOrm\Command\ModelCommand;
+use EasySwoole\HyperfOrm\CommandUtility;
 
 // command
-CommandManager::getInstance()->addCommand(new ModelCommand());
+CommandUtility::getInstance()->init();
 ```
     
 Command 
