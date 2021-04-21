@@ -96,7 +96,6 @@ file bootstrap.php add
 ```php
 <?php
 //全局bootstrap事件
-use EasySwoole\Command\CommandManager;
 use EasySwoole\HyperfOrm\CommandUtility;
 
 // command
