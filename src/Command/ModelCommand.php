@@ -16,6 +16,7 @@ use Psr\Container\ContainerInterface;
 use Swoole\Timer;
 use EasySwoole\EasySwoole\Core;
 use Swoole\Coroutine\Scheduler;
+use EasySwoole\Command\Color;
 
 class ModelCommand implements CommandInterface
 {
@@ -30,19 +31,19 @@ class ModelCommand implements CommandInterface
         $table = !empty($args) ? current($args) : '';
         Core::getInstance()->initialize();
         $scheduler = new Scheduler();
-        $scheduler->add(function () use ($table, &$message) {
+        $scheduler->add(function () use ($table) {
             try {
                 $container = Di::getInstance()->get(ContainerInterface::class);
                 $model = new GenerateModel($container);
                 $model->create($table);
-                $message = 'success';
+                echo Color::info('success');
             } catch (\Throwable $exception) {
-                $message = "false: {$exception->getMessage()}";
+                echo Color::error("false: {$exception->getMessage()}");
             }
             Timer::clearAll();
         });
         $scheduler->start();
-        return $message;
+        return null;
     }
 
     public function help(CommandHelpInterface $commandHelp): CommandHelpInterface
