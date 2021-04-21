@@ -25,16 +25,22 @@ class CommandUtility
 {
     use Singleton;
 
-    public function init()
+    public function init(array $other = [])
     {
-        CommandManager::getInstance()->addCommand(new ModelCommand());
-        CommandManager::getInstance()->addCommand(new GenMigrateCommand());
-        CommandManager::getInstance()->addCommand(new MigrateCommand());
-        CommandManager::getInstance()->addCommand(new MigrateInstallCommand());
-        CommandManager::getInstance()->addCommand(new MigrateRollbackCommand());
-        CommandManager::getInstance()->addCommand(new MigrateResetCommand());
-        CommandManager::getInstance()->addCommand(new MigrateRefreshCommand());
-        CommandManager::getInstance()->addCommand(new MigrateFreshCommand());
-        CommandManager::getInstance()->addCommand(new MigrateStatusCommand());
+        $commands = [
+            new ModelCommand(),
+            new GenMigrateCommand(),
+            new MigrateCommand(),
+            new MigrateInstallCommand(),
+            new MigrateRollbackCommand(),
+            new MigrateResetCommand(),
+            new MigrateRefreshCommand(),
+            new MigrateFreshCommand(),
+            new MigrateStatusCommand(),
+        ];
+        $commands = array_merge($commands, $other);
+        foreach ($commands as $command) {
+            CommandManager::getInstance()->addCommand($command);
+        }
     }
 }
