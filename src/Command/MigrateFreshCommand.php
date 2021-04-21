@@ -14,7 +14,6 @@ use EasySwoole\Command\AbstractInterface\CommandInterface;
 use EasySwoole\Command\Caller;
 use EasySwoole\Command\Color;
 use EasySwoole\Command\CommandManager;
-use Swoole\Coroutine;
 use Swoole\Coroutine\Scheduler;
 use Swoole\Timer;
 
@@ -49,6 +48,7 @@ class MigrateFreshCommand extends BaseCommand implements CommandInterface
             'migrate',
             "--database={$connection}",
             "--force=true",
+            "--coroutine=true",
         ];
         if (!empty($path)) {
             $params[] = "--path={$path}";
@@ -69,8 +69,9 @@ class MigrateFreshCommand extends BaseCommand implements CommandInterface
 
     public function exec(): ?string
     {
-        if (Coroutine::getUid()) {
-            $message = $this->fresh();
+        $coroutine = CommandManager::getInstance()->getOpt('coroutine', false);
+        if ($coroutine) {
+            $this->fresh();
         } else {
             $scheduler = new Scheduler();
             $scheduler->add(function () {

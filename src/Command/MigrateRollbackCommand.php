@@ -43,8 +43,9 @@ class MigrateRollbackCommand extends BaseCommand implements CommandInterface
 
     public function exec(): ?string
     {
-        if (Coroutine::getUid()) {
-            $message = $this->rollback();
+        $coroutine = CommandManager::getInstance()->getOpt('coroutine', false);
+        if ($coroutine) {
+            $this->rollback();
         } else {
             $scheduler = new Scheduler();
             $scheduler->add(function () {
