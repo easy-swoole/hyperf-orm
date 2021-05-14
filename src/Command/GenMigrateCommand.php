@@ -31,6 +31,7 @@ class GenMigrateCommand extends BaseCommand implements CommandInterface
 
     public function exec(): ?string
     {
+        $this->initialize();
         // It's possible for the developer to specify the tables to modify in this
         // schema operation. The developer may also specify if this table needs
         // to be freshly created so we can create the appropriate migrations.

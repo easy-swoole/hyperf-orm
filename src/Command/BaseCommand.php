@@ -36,8 +36,17 @@ abstract class BaseCommand
      */
     protected $resolver;
 
-    public function __construct()
+    /**
+     * @var bool
+     */
+    private $isInitialize = false;
+
+    protected function initialize()
     {
+        if ($this->isInitialize) {
+            return;
+        }
+        $this->isInitialize = true;
         Core::getInstance()->initialize();
         $this->resolver = make(ConnectionResolverInterface::class);
         $this->repository = make(DatabaseMigrationRepository::class, [$this->resolver, 'migrations']);
