@@ -31,6 +31,7 @@ class MigrateRefreshCommand extends BaseCommand implements CommandInterface
 
     public function exec(): ?string
     {
+        $this->initialize();
         $scheduler = new Scheduler();
         $scheduler->add(function () {
             // Next we'll gather some of the options so that we can have the right options

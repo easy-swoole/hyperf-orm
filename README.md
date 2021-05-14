@@ -84,14 +84,16 @@ Use
     use EasySwoole\EasySwoole\Config;        
     use EasySwoole\Pool\Manager;
     use EasySwoole\HyperfOrm\MysqlPool;  
+    use Hyperf\Utils\ApplicationContext;
     
     public static function initialize() {
             
         Di::getInstance()->set(ContainerInterface::class, Container::class);
+        ApplicationContext::setContainer(Di::getInstance()->get(ContainerInterface::class));
         Di::getInstance()->set(ConfigInterface::class, ConfigFactory::class);
         Di::getInstance()->set(ConnectionResolverInterface::class,  ConnectionResolver::class, []);
 
-        $databases = Config::getInstance()->getConf('databases');
+        $databases = Config::getInstance()->getConf('database');
         $manager = Manager::getInstance();
         foreach ($databases as $name => $conf) {
             if (!is_null($manager->get($name))) {

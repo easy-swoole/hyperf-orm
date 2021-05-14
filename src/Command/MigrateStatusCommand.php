@@ -33,6 +33,7 @@ class MigrateStatusCommand extends BaseCommand implements CommandInterface
 
     public function exec(): ?string
     {
+        $this->initialize();
         $scheduler = new Scheduler();
         $scheduler->add(function () {
 

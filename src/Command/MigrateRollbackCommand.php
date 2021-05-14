@@ -43,6 +43,7 @@ class MigrateRollbackCommand extends BaseCommand implements CommandInterface
 
     public function exec(): ?string
     {
+        $this->initialize();
         $coroutine = CommandManager::getInstance()->getOpt('coroutine', false);
         if ($coroutine) {
             $this->rollback();
