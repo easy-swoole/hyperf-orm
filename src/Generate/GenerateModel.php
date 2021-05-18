@@ -283,7 +283,7 @@ class GenerateModel
             return true;
         }
 
-        return $table === $this->config->get('database.migrations', 'migrations');
+        return $table === $this->config->get('databases.migrations', 'migrations');
     }
 
     protected function createModels(ModelOption $option): array
@@ -307,7 +307,7 @@ class GenerateModel
 
     protected function getOption(string $key, string $pool = 'default', $default = null)
     {
-        return $this->config->get("database.{$pool}.{$key}", $default);
+        return $this->config->get("databases.{$pool}.{$key}", $default);
     }
 
     public function create(string $table = '', string $pool = 'default', string $path = ''): array
