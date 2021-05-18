@@ -30,7 +30,7 @@ Config
 ```php
 <?php
     return  [
-            'database' => [
+            'databases' => [
                 'default' => [
                     'driver'    => 'mysql',
                     'host'      => '127.0.0.1',
@@ -93,7 +93,7 @@ Use
         Di::getInstance()->set(ConfigInterface::class, ConfigFactory::class);
         Di::getInstance()->set(ConnectionResolverInterface::class,  ConnectionResolver::class, []);
 
-        $databases = Config::getInstance()->getConf('database');
+        $databases = Config::getInstance()->getConf('databases');
         $manager = Manager::getInstance();
         foreach ($databases as $name => $conf) {
             if (!is_null($manager->get($name))) {
