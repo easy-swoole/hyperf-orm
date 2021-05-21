@@ -27,11 +27,7 @@ class ConfigProvider
             'dependencies' => [
                 ContainerInterface::class          => Container::class,
                 ConfigInterface::class             => ConfigFactory::class,
-                ConnectionResolverInterface::class => [
-                    'key' => ConnectionResolverInterface::class,
-                    "obj" => ConnectionResolver::class,
-                    "arg" => [[]],
-                ],
+                ConnectionResolverInterface::class => ConnectionResolver::class,
             ],
             'publish'      => [
                 [

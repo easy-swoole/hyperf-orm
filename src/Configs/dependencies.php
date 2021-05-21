@@ -10,9 +10,5 @@ use Hyperf\Database\ConnectionResolverInterface;
 return [
     ContainerInterface::class => Container::class,
     ConfigInterface::class => ConfigFactory::class,
-    [
-        'key' => ConnectionResolverInterface::class,
-        "obj" => ConnectionResolver::class,
-        "arg" => [[]],
-    ],
+    ConnectionResolverInterface::class => ConnectionResolver::class
 ];
