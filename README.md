@@ -91,7 +91,7 @@ Use
         Di::getInstance()->set(ContainerInterface::class, Container::class);
         ApplicationContext::setContainer(Di::getInstance()->get(ContainerInterface::class));
         Di::getInstance()->set(ConfigInterface::class, ConfigFactory::class);
-        Di::getInstance()->set(ConnectionResolverInterface::class,  ConnectionResolver::class, []);
+        Di::getInstance()->set(ConnectionResolverInterface::class,  ConnectionResolver::class);
 
         $databases = Config::getInstance()->getConf('databases');
         $manager = Manager::getInstance();
