@@ -10,7 +10,7 @@ use Hyperf\Database\ConnectionResolverInterface;
 return [
     ContainerInterface::class => Container::class,
     ConfigInterface::class => ConfigFactory::class,
-    ConnectionResolverInterface::class => [
+    [
         'key' => ConnectionResolverInterface::class,
         "obj" => ConnectionResolver::class,
         "arg" => [[]],

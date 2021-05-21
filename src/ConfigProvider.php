@@ -25,19 +25,19 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
-                ContainerInterface::class => Container::class,
-                ConfigInterface::class => ConfigFactory::class,
-                [
+                ContainerInterface::class          => Container::class,
+                ConfigInterface::class             => ConfigFactory::class,
+                ConnectionResolverInterface::class => [
                     'key' => ConnectionResolverInterface::class,
                     "obj" => ConnectionResolver::class,
                     "arg" => [[]],
                 ],
             ],
-            'publish' => [
+            'publish'      => [
                 [
-                    'id' => 'databases',
+                    'id'          => 'databases',
                     'description' => 'The config for databases.',
-                    'source' => __DIR__ . '/Configs/databases.php',
+                    'source'      => __DIR__ . '/Configs/databases.php',
                     'destination' => EASYSWOOLE_ROOT . '/App/Configs/databases.php',
                 ],
             ],
