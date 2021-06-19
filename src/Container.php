@@ -43,6 +43,9 @@ class Container implements ContainerInterface
     {
         $data = Di::getInstance($parameters)->get($name);
         if (is_null($data)) {
+            if (interface_exists($name)) {
+                return null;
+            }
             $parameters = array_values($parameters);
             $data = new $name(...$parameters);
         }
