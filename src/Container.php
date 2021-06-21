@@ -14,6 +14,7 @@ class Container implements ContainerInterface
 
     /**
      * @param string $id
+     *
      * @return callable|mixed|string|null
      * @throws Throwable
      */
@@ -24,6 +25,7 @@ class Container implements ContainerInterface
 
     /**
      * @param string $id
+     *
      * @return callable|mixed|string|null
      * @throws Throwable
      */
@@ -31,6 +33,10 @@ class Container implements ContainerInterface
     {
         return Di::getInstance()->get($id) != null;
     }
+
+    public $dependencies = [
+        \Hyperf\Contract\LengthAwarePaginatorInterface::class => 'Hyperf\\Paginator\\LengthAwarePaginator'
+    ];
 
     /**
      * @param string $name
@@ -43,8 +49,13 @@ class Container implements ContainerInterface
     {
         $data = Di::getInstance($parameters)->get($name);
         if (is_null($data)) {
+            // 兼容
             if (interface_exists($name)) {
-                return null;
+                if (isset($this->dependencies[$name]) && class_exists($this->dependencies[$name])) {
+                    $name = $this->dependencies[$name];
+                } else {
+                    return null;
+                }
             }
             $parameters = array_values($parameters);
             $data = new $name(...$parameters);
