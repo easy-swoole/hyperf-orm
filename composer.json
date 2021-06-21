@@ -16,8 +16,7 @@
     "doctrine/dbal": "2.10.4",
     "easyswoole/component": "^2.2",
     "easyswoole/pool": "^1.0",
-    "easyswoole/command": "^1.1",
-    "hyperf/paginator": "^2.1"
+    "easyswoole/command": "^1.1"
   },
   "require-dev": {
     "easyswoole/swoole-ide-helper": "^1.2",

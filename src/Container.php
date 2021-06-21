@@ -35,7 +35,7 @@ class Container implements ContainerInterface
     }
 
     public $dependencies = [
-        \Hyperf\Contract\LengthAwarePaginatorInterface::class => \Hyperf\Paginator\LengthAwarePaginator::class,
+        \Hyperf\Contract\LengthAwarePaginatorInterface::class => 'Hyperf\\Paginator\\LengthAwarePaginator'
     ];
 
     /**
@@ -51,7 +51,7 @@ class Container implements ContainerInterface
         if (is_null($data)) {
             // 兼容
             if (interface_exists($name)) {
-                if (isset($this->dependencies[$name])) {
+                if (isset($this->dependencies[$name]) && class_exists($this->dependencies[$name])) {
                     $name = $this->dependencies[$name];
                 } else {
                     return null;
